@@ -1,0 +1,13 @@
+<!-- ko foreach: getRegion('before-widget-address') -->
+    <!-- ko template: getTemplate() --><!-- /ko -->
+<!--/ko-->
+
+<!-- ko if: (isAmazonAccountLoggedIn) -->
+    <div class="amazon-widget-container">
+        <div id="addressBookWidgetDiv" class="amazon-widget amazon-widget--address" data-bind="afterRender: initAddressWidget"></div>
+    </div>
+<!--/ko-->
+
+<!-- ko foreach: getRegion('after-widget-address') -->
+    <!-- ko template: getTemplate() --><!-- /ko -->
+<!--/ko-->

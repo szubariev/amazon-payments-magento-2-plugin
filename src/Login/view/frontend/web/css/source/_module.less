@@ -1,0 +1,103 @@
+@import 'module/_vars.less';
+
+& when (@media-common = true) {
+
+    .amazon-button-container {
+        display: table;
+        margin: 0 0 22px;
+
+        &__cell {
+            display: table-cell;
+            min-width: 45px;
+            position: relative;
+        }
+
+        img {
+            display: block;
+        }
+
+        .field-tooltip {
+            margin: -12px 0 0;
+            top: 50%;
+            right: 5px;
+        }
+
+        .checkout-shipping-address & {
+            margin: 22px 0;
+        }
+    }
+
+    .login-container {
+        .block {
+            &-amazon-login {
+                .actions-toolbar {
+                    margin-top: 25px;
+                }
+            }
+        }
+    }
+
+    .amazon-validate-container {
+        .block {
+            .block-title {
+                &:extend(.abs-login-block-title all);
+                .lib-font-size(18);
+            }
+        }
+        .fieldset {
+            .lib-form-hasrequired(bottom);
+            &:after {
+                margin-top: 35px;
+            }
+        }
+    }
+}
+
+@media all and (max-width: @screen__m) {
+    .amazon-button-container {
+        width: 100%;
+    }
+}
+
+//
+//  Desktop
+//  ---------------------------------------------
+
+.media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__m) {
+    .login-container {
+        .block {
+            &-amazon-login {
+                float: right;
+                clear: none;
+                .actions-toolbar {
+                    margin-top: 25px;
+                }
+            }
+            &:nth-child(2) + .block-amazon-login {
+                clear: none;
+            }
+        }
+    }
+
+    .amazon-validate-container {
+        width: 500px;
+        margin: 40px auto 0 auto;
+
+        .primary {
+            width: 190px;
+        }
+
+        .continue-as-guest {
+            width: 130px;
+        }
+
+        .forgot-password {
+            width: 175px;
+            text-align: right;
+        }
+    }
+}
+
+.amazon-logout-widget {
+    display: none;
+}

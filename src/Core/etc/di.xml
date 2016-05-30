@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Amazon\Core\Client\ClientFactoryInterface" type="Amazon\Core\Client\ClientFactory" />
+    <preference for="PayWithAmazon\ClientInterface" type="PayWithAmazon\Client" />
+    <type name="PayWithAmazon\ClientInterface">
+        <arguments>
+            <argument name="config" xsi:type="array" />
+        </arguments>
+    </type>
+    <type name="Amazon\Core\Helper\Data">
+        <arguments>
+            <argument name="storeManager" xsi:type="object">Magento\Store\Model\StoreManagerInterface\Proxy</argument>
+        </arguments>
+    </type>
+    <type name="Amazon\Core\Domain\AmazonAddressFactory">
+        <arguments>
+            <argument name="perCountryAddressHandlers" xsi:type="array">
+                <item name="DE" xsi:type="string">Amazon\Core\Domain\AmazonAddressDe</item>
+                <item name="AT" xsi:type="string">Amazon\Core\Domain\AmazonAddressDe</item>
+            </argument>
+        </arguments>
+    </type>
+</config>
