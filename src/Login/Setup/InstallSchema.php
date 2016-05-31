@@ -23,7 +23,8 @@ class InstallSchema implements InstallSchemaInterface
                 [
                     'identity' => true,
                     'unsigned' => true,
-                    'primary'  => true
+                    'primary'  => true,
+					'nullable' => false
                 ]
             )
             ->addColumn(
