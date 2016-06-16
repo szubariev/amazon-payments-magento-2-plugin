@@ -1,5 +1,18 @@
 <?php
-
+/**
+ * Copyright 2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ *  http://aws.amazon.com/apache2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
 namespace Page;
 
 use Behat\Mink\Driver\DriverInterface;
@@ -20,23 +33,23 @@ trait PageTrait
      */
     abstract public function getElement($name);
 
-    public function waitForCondition($condition, $maxWait = 60000)
+    public function waitForCondition($condition, $maxWait = 90000)
     {
         $this->getDriver()->wait($maxWait, $condition);
     }
 
-    public function waitForPageLoad($maxWait = 60000)
+    public function waitForPageLoad($maxWait = 90000)
     {
         $this->waitForCondition('(document.readyState == "complete") && (typeof window.jQuery == "function") && (jQuery.active == 0)', $maxWait);
     }
 
-    public function waitForElement($elementName, $maxWait = 60000)
+    public function waitForElement($elementName, $maxWait = 90000)
     {
         $visibilityCheck = $this->getElementVisibilityCheck($elementName);
         $this->waitForCondition("(typeof window.jQuery == 'function') && $visibilityCheck", $maxWait);
     }
 
-    public function waitUntilElementDisappear($elementName, $maxWait = 60000)
+    public function waitUntilElementDisappear($elementName, $maxWait = 90000)
     {
         $visibilityCheck = $this->getElementVisibilityCheck($elementName);
         $this->waitForCondition("(typeof window.jQuery == 'function') && !$visibilityCheck", $maxWait);
@@ -68,7 +81,7 @@ trait PageTrait
         return $this->getElementWithWait($elementName)->getText();
     }
 
-    public function getElementWithWait($elementName, $waitTime = 60000)
+    public function getElementWithWait($elementName, $waitTime = 90000)
     {
         $this->waitForElement($elementName, $waitTime);
         return $this->getElement($elementName);
@@ -97,7 +110,7 @@ trait PageTrait
         return $this->getDriver()->isVisible($xpath);
     }
 
-    public function waitForAjaxRequestsToComplete($maxWait = 60000)
+    public function waitForAjaxRequestsToComplete($maxWait = 90000)
     {
         $this->getDriver()->wait($maxWait, 'jQuery.active == 0');
     }

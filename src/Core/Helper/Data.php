@@ -1,5 +1,18 @@
 <?php
-
+/**
+ * Copyright 2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ *  http://aws.amazon.com/apache2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
 namespace Amazon\Core\Helper;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
@@ -490,6 +503,8 @@ class Data extends AbstractHelper
         if (in_array($context, ['capture', 'authorization_capture'])) {
             $simulationStrings['Capture:Declined:AmazonRejected']
                 = '{"SandboxSimulation": {"State":"Declined", "ReasonCode":"AmazonRejected"}}';
+            $simulationStrings['Capture:Pending']
+                = '{"SandboxSimulation": {"State":"Pending"}}';
         }
 
         return $simulationStrings;
@@ -506,6 +521,7 @@ class Data extends AbstractHelper
             'Authorization:Declined:AmazonRejected' => 'Authorization hard decline',
             'Authorization:Declined:TransactionTimedOut' => 'Authorization timed out',
             'Capture:Declined:AmazonRejected' => 'Capture declined',
+            'Capture:Pending' => 'Capture pending'
         ];
 
         return $simulationlabels;

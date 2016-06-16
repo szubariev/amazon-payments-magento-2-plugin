@@ -1,5 +1,18 @@
 <?php
-
+/**
+ * Copyright 2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ *  http://aws.amazon.com/apache2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
 namespace Amazon\Payment\Setup;
 
 use Amazon\Payment\Api\Data\PendingCaptureInterface;
@@ -50,7 +63,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
                             'identity' => true,
                             'unsigned' => true,
                             'primary'  => true,
-							'nullable' => false
+                            'nullable' => false
                         ]
                     )
                     ->addColumn(
@@ -88,10 +101,10 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 $setup->getTable(QuoteLink::TABLE_NAME),
                 'sandbox_simulation_reference',
                 [
-                    'type' => Table::TYPE_TEXT,
-                    'length' => 255,
+                    'type'     => Table::TYPE_TEXT,
+                    'length'   => 255,
                     'nullable' => true,
-                    'comment' => 'Sandbox simulation reference'
+                    'comment'  => 'Sandbox simulation reference'
                 ]
             );
 
@@ -105,9 +118,9 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 [
                     'unsigned' => true,
                     'nullable' => false,
-                    'default' => 0,
-                    'type' => Table::TYPE_SMALLINT,
-                    'comment' => 'Quote confirmed with Amazon'
+                    'default'  => 0,
+                    'type'     => Table::TYPE_SMALLINT,
+                    'comment'  => 'Quote confirmed with Amazon'
                 ]
             );
         }
@@ -124,7 +137,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
                         'identity' => true,
                         'unsigned' => true,
                         'primary'  => true,
-						'nullable' => false
+                        'nullable' => false
                     ]
                 )
                 ->addColumn(
@@ -145,7 +158,8 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 )
                 ->addIndex(
                     $setup->getIdxName(
-                        PendingCapture::TABLE_NAME, [PendingCaptureInterface::CAPTURE_ID], AdapterInterface::INDEX_TYPE_UNIQUE
+                        PendingCapture::TABLE_NAME, [PendingCaptureInterface::CAPTURE_ID],
+                        AdapterInterface::INDEX_TYPE_UNIQUE
                     ),
                     [PendingCaptureInterface::CAPTURE_ID],
                     ['type' => AdapterInterface::INDEX_TYPE_UNIQUE]
@@ -177,6 +191,61 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 AdapterInterface::FK_ACTION_CASCADE
             );
         }
+
+        if (version_compare($context->getVersion(), '1.7.0', '<')) {
+            $this->addColumnsToPendingCaptureQueue($setup);
+        }
+    }
+
+    private function addColumnsToPendingCaptureQueue(SchemaSetupInterface $setup)
+    {
+        $setup->getConnection()->addColumn(
+            $setup->getTable(PendingCapture::TABLE_NAME),
+            'order_id',
+            [
+                'unsigned' => true,
+                'nullable' => false,
+                'type'     => Table::TYPE_INTEGER,
+                'comment'  => 'order id'
+            ]
+        );
+
+        $setup->getConnection()->addColumn(
+            $setup->getTable(PendingCapture::TABLE_NAME),
+            'payment_id',
+            [
+                'unsigned' => true,
+                'nullable' => false,
+                'type'     => Table::TYPE_INTEGER,
+                'comment'  => 'payment id'
+            ]
+        );
+
+        $setup->getConnection()->dropIndex(
+            PendingCapture::TABLE_NAME,
+            $setup->getIdxName(
+                PendingCapture::TABLE_NAME,
+                [PendingCaptureInterface::CAPTURE_ID],
+                AdapterInterface::INDEX_TYPE_UNIQUE
+            )
+        );
+
+        $pendingColumns = [
+            PendingCaptureInterface::ORDER_ID,
+            PendingCaptureInterface::PAYMENT_ID,
+            PendingCaptureInterface::CAPTURE_ID
+        ];
+
+        $setup->getConnection()->addIndex(
+            PendingCapture::TABLE_NAME,
+            $setup->getIdxName(
+                PendingCapture::TABLE_NAME,
+                $pendingColumns,
+                AdapterInterface::INDEX_TYPE_UNIQUE
+            ),
+            $pendingColumns,
+            AdapterInterface::INDEX_TYPE_UNIQUE
+        );
     }
 
     /**
@@ -187,7 +256,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
     {
         $row = $this->eavSetup->getAttribute('customer_address', 'street', 'multiline_count');
 
-        if ($row === false || !is_numeric($row)) {
+        if ($row === false || ! is_numeric($row)) {
             throw new LocalizedException(__('Could not find the "multiline_count" config of the "street" Customer address attribute.'));
         }
 
